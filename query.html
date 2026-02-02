@@ -105,10 +105,7 @@
             font-size: 20px;
         }
 
-        .result-id {
-            font-size: 14px;
-            opacity: 0.9;
-        }
+
 
         .form-row {
             margin-bottom: 25px;
@@ -227,7 +224,7 @@
         <section id="resultSection" class="result-section">
             <div class="result-header">
                 <h2>📝 編輯報名資料</h2>
-                <span class="result-id" id="resultId"></span>
+
             </div>
 
             <div class="info-box">
@@ -334,7 +331,7 @@
 
             currentRegistrationId = data.id;
 
-            document.getElementById('resultId').textContent = `ID: ${data.id}`;
+
             document.getElementById('studentName').value = data.name;
             document.getElementById('studentBirthday').value = data.birthday || '';
 
