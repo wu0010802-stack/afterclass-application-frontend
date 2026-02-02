@@ -59,7 +59,13 @@ function showToast(message, type = 'success', duration = 5000) {
 
 // API Helper
 async function apiFetch(url, options = {}) {
-    const API_BASE = 'http://localhost:3000';
+    // Configuration: Set to true to use production backend even when running locally
+    const USE_PROD_BACKEND_LOCALLY = false;
+    const PROD_API_URL = 'https://afterclass-backend.zeabur.app';
+    const LOCAL_API_URL = 'http://localhost:3000';
+
+    const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const API_BASE = (isLocal && !USE_PROD_BACKEND_LOCALLY) ? LOCAL_API_URL : PROD_API_URL;
     const fullUrl = url.startsWith('http') ? url : `${API_BASE}${url}`;
 
     // Add auth token if available (for admin)
