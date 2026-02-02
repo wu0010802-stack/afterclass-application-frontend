@@ -60,7 +60,7 @@ function showToast(message, type = 'success', duration = 5000) {
 // API Helper
 async function apiFetch(url, options = {}) {
     // Configuration: Set to true to use production backend even when running locally
-    const USE_PROD_BACKEND_LOCALLY = false;
+    const USE_PROD_BACKEND_LOCALLY = true;
     const PROD_API_URL = 'https://afterclass-backend.zeabur.app';
     const LOCAL_API_URL = 'http://localhost:3000';
 
