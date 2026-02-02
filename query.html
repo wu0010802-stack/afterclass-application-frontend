@@ -220,6 +220,10 @@
             </div>
         </section>
 
+        <section id="searchErrorSection" style="display: none; text-align: center;">
+            <div id="searchError" class="error-message" style="display: inline-block; max-width: 600px;"></div>
+        </section>
+
         <section id="resultSection" class="result-section">
             <div class="result-header">
                 <h2>📝 編輯報名資料</h2>
@@ -316,11 +320,18 @@
 
         function showError(message) {
             const resultSection = document.getElementById('resultSection');
-            resultSection.style.display = 'block';
-            resultSection.innerHTML = `<div class="error-message">${message}</div>`;
+            const errorSection = document.getElementById('searchErrorSection');
+            const errorDiv = document.getElementById('searchError');
+
+            resultSection.style.display = 'none';
+            errorDiv.textContent = message;
+            errorSection.style.display = 'block';
         }
 
         function displayResult(data) {
+            // Hide error if shown
+            document.getElementById('searchErrorSection').style.display = 'none';
+
             currentRegistrationId = data.id;
 
             document.getElementById('resultId').textContent = `ID: ${data.id}`;
@@ -361,6 +372,8 @@
 
             document.getElementById('resultSection').style.display = 'block';
         }
+
+
 
         async function saveChanges() {
             const payload = {
