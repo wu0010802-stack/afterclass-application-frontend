@@ -198,12 +198,28 @@ function updateCourseAvailabilityUI(availability) {
 // --- FORM SUBMISSION ---
 
 async function handleSubmitRegistration() {
+    // Check network status immediately
+    if (!navigator.onLine) {
+        showToast('網路連線失敗，無法送出報名表，請檢查您的網路連線。', 'error');
+        return;
+    }
+
     const name = document.getElementById('studentName').value;
     const birthday = document.getElementById('studentBirthday').value;
     const classSelected = document.querySelector('input[name="class"]:checked');
 
     if (!name || !birthday || !classSelected) {
         showToast('請填寫完整的幼兒姓名、生日及班級。', 'error');
+        return;
+    }
+
+    // Birthday validation: Future date check
+    const inputDate = new Date(birthday);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to compare dates only
+    
+    if (inputDate > today) {
+        showToast('出生日期無效：不能選擇未來的日期。', 'error');
         return;
     }
 
@@ -236,18 +252,31 @@ async function handleSubmitRegistration() {
             body: JSON.stringify(payload)
         });
 
-        const result = await response.json();
+        // Handle JSON parsing error if backend returns non-JSON (e.g. 500 HTML page)
+        let result;
+        try {
+            result = await response.json();
+        } catch (e) {
+            throw new Error('伺服器回應格式錯誤，請聯繫管理員。');
+        }
 
         if (response.ok) {
             showToast(result.message || '報名成功！', 'success');
             document.querySelector('form').reset();
             fetchCourseAvailability(); // Refresh availability
+            // Scroll to top to see success message clearly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             throw new Error(result.message || '報名失敗，請稍後再試。');
         }
     } catch (error) {
         console.error('Error:', error);
-        showToast(error.message, 'error');
+        // Identify network errors (fetch failure)
+        if (error.name === 'TypeError' && error.message.includes('fetch') || error.message.includes('Network request failed')) {
+            showToast('網路連線失敗，請檢查您的網路連線。', 'error');
+        } else {
+            showToast(error.message, 'error');
+        }
     }
 }
 
