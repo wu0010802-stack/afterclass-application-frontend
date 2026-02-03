@@ -183,12 +183,28 @@ function updateCourseAvailabilityUI(availability) {
                 courseTextSpan.appendChild(qtySpan);
             }
 
-            if (remaining <= 0) {
+            if (remaining === -1) {
+                // Full and NO Waitlist
+                qtySpan.textContent = `(已額滿)`;
+                qtySpan.style.color = '#7f8c8d'; // Grey
+                checkbox.disabled = true;
+                checkbox.checked = false;
+                checkbox.parentElement.style.opacity = '0.6';
+                checkbox.parentElement.style.cursor = 'not-allowed';
+            } else if (remaining <= 0) {
+                // Full, allow Waitlist
                 qtySpan.textContent = `(額滿，排候補)`;
-                qtySpan.style.color = '#e67e22';
+                qtySpan.style.color = '#e67e22'; // Orange
+                checkbox.disabled = false;
+                checkbox.parentElement.style.opacity = '1';
+                checkbox.parentElement.style.cursor = 'pointer';
             } else {
+                // Available
                 qtySpan.textContent = `(剩餘: ${remaining})`;
-                qtySpan.style.color = '#d93025';
+                qtySpan.style.color = '#d93025'; // Red
+                checkbox.disabled = false;
+                checkbox.parentElement.style.opacity = '1';
+                checkbox.parentElement.style.cursor = 'pointer';
             }
         }
     });
@@ -217,7 +233,7 @@ async function handleSubmitRegistration() {
     const inputDate = new Date(birthday);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time to compare dates only
-    
+
     if (inputDate > today) {
         showToast('出生日期無效：不能選擇未來的日期。', 'error');
         return;
