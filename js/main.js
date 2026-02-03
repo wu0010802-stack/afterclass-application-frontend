@@ -124,6 +124,8 @@ function checkRegistrationTime(start, end) {
         return;
     }
 
+    const submitBtn = document.getElementById('submitBtn');
+
     if (now < startDate) {
         const daysLeft = Math.ceil((startDate - now) / (1000 * 60 * 60 * 24));
         notice.innerHTML = `
@@ -137,6 +139,12 @@ function checkRegistrationTime(start, end) {
                 </div>
             </div>`;
         notice.style.display = 'block';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '報名尚未開放';
+            submitBtn.style.opacity = '0.5';
+            submitBtn.style.cursor = 'not-allowed';
+        }
     } else if (now > endDate) {
         notice.innerHTML = `
             <div style="display: flex; align-items: center; gap: 12px;">
@@ -149,8 +157,20 @@ function checkRegistrationTime(start, end) {
         notice.style.display = 'block';
         notice.style.background = 'linear-gradient(135deg, #f8d7da, #f5c6cb)';
         notice.style.borderLeftColor = '#dc3545';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '報名已截止';
+            submitBtn.style.opacity = '0.5';
+            submitBtn.style.cursor = 'not-allowed';
+        }
     } else {
         notice.style.display = 'none';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '確認報名資料 <span style="font-size:0.8em; font-weight:400;">Submit</span>';
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+        }
     }
 }
 
