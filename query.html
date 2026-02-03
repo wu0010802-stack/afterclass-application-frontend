@@ -64,6 +64,33 @@
             border-color: var(--primary-color);
         }
 
+        .search-input.valid {
+            border-color: #28a745;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2328a745' width='18px' height='18px'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 18px;
+        }
+
+        .search-input.invalid {
+            border-color: #dc3545;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23dc3545' width='18px' height='18px'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 18px;
+        }
+
+        .validation-msg {
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .validation-msg.error {
+            color: #dc3545;
+            display: block;
+        }
+
         .search-btn {
             margin-top: 20px;
             padding: 15px 40px;
@@ -214,10 +241,12 @@
                 <div style="margin-bottom: 20px;">
                     <label class="search-label">請輸入幼兒姓名 Student Name</label>
                     <input type="text" id="searchInput" class="search-input" placeholder="請輸入姓名..." autofocus>
+                    <div id="nameValidationMsg" class="validation-msg"></div>
                 </div>
                 <div>
                     <label class="search-label">請輸入幼兒生日 Birthday</label>
                     <input type="date" id="searchBirthday" class="search-input">
+                    <div id="birthdayValidationMsg" class="validation-msg"></div>
                 </div>
                 <button class="search-btn" onclick="searchRegistration()">🔍 查詢 Search</button>
             </div>
@@ -297,23 +326,32 @@
             }
         })();
 
+        // Real-time validation
+        const nameInput = document.getElementById('searchInput');
+        const birthdayInput = document.getElementById('searchBirthday');
+        const nameMsg = document.getElementById('nameValidationMsg');
+        const birthdayMsg = document.getElementById('birthdayValidationMsg');
+
+        nameInput.addEventListener('input', validateName);
+        nameInput.addEventListener('blur', validateName);
+        birthdayInput.addEventListener('input', validateBirthday);
+        birthdayInput.addEventListener('blur', validateBirthday);
+
         document.getElementById('searchInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') searchRegistration();
         });
 
         async function searchRegistration() {
+            if (!validateName() || !validateBirthday()) {
+                if (!validateName()) validateName(); // Trigger visual feedback
+                if (!validateBirthday()) validateBirthday(); // Trigger visual feedback
+                return;
+            }
+
             const name = document.getElementById('searchInput').value.trim();
             const birthday = document.getElementById('searchBirthday').value;
+            // Additional validation logic is now handled by validate functions
 
-            if (!name) {
-                showToast('請輸入幼兒姓名', 'warning');
-                return;
-            }
-
-            if (!birthday) {
-                showToast('請輸入幼兒生日', 'warning');
-                return;
-            }
 
             try {
                 const response = await apiFetch('/query-registration?name=' + encodeURIComponent(name) + '&birthday=' + encodeURIComponent(birthday));
@@ -325,6 +363,57 @@
                 }
             } catch (e) {
                 showError('連線錯誤，請確認伺服器是否運行');
+            }
+        }
+
+        function validateName() {
+            const name = nameInput.value.trim();
+            // Regex for checking if name contains at least one Chinese character or is valid English
+            // Allowing spaces and dots for English names
+            const isValid = name.length > 0;
+
+            if (isValid) {
+                nameInput.classList.remove('invalid');
+                nameInput.classList.add('valid');
+                nameMsg.classList.remove('error');
+                nameMsg.textContent = '';
+                return true;
+            } else {
+                nameInput.classList.remove('valid');
+                nameInput.classList.add('invalid');
+                nameMsg.classList.add('error');
+                nameMsg.textContent = '請輸入幼兒姓名';
+                return false;
+            }
+        }
+
+        function validateBirthday() {
+            const birthday = birthdayInput.value;
+            const isValid = birthday !== '';
+
+            // Optional: Add logic to check if date is in the future
+            if (isValid) {
+                const date = new Date(birthday);
+                const now = new Date();
+                if (date > now) {
+                    birthdayInput.classList.remove('valid');
+                    birthdayInput.classList.add('invalid');
+                    birthdayMsg.classList.add('error');
+                    birthdayMsg.textContent = '生日不能是未來的日期';
+                    return false;
+                }
+
+                birthdayInput.classList.remove('invalid');
+                birthdayInput.classList.add('valid');
+                birthdayMsg.classList.remove('error');
+                birthdayMsg.textContent = '';
+                return true;
+            } else {
+                birthdayInput.classList.remove('valid');
+                birthdayInput.classList.add('invalid');
+                birthdayMsg.classList.add('error');
+                birthdayMsg.textContent = '請選擇幼兒生日';
+                return false;
             }
         }
 
