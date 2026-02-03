@@ -211,8 +211,14 @@
 
         <section class="search-section">
             <div class="search-box">
-                <label class="search-label">請輸入幼兒姓名 Student Name</label>
-                <input type="text" id="searchInput" class="search-input" placeholder="請輸入姓名..." autofocus>
+                <div style="margin-bottom: 20px;">
+                    <label class="search-label">請輸入幼兒姓名 Student Name</label>
+                    <input type="text" id="searchInput" class="search-input" placeholder="請輸入姓名..." autofocus>
+                </div>
+                <div>
+                    <label class="search-label">請輸入幼兒生日 Birthday</label>
+                    <input type="date" id="searchBirthday" class="search-input">
+                </div>
                 <button class="search-btn" onclick="searchRegistration()">🔍 查詢 Search</button>
             </div>
         </section>
@@ -237,7 +243,7 @@
             </div>
 
             <div class="form-row">
-                <label class="form-label">幼兒生日 Birthday (YYYY-MM-DD)</label>
+                <label class="form-label">幼兒生日 Birthday (YYYY/MM/DD)</label>
                 <input type="date" id="studentBirthday" class="form-input">
             </div>
 
@@ -297,13 +303,20 @@
 
         async function searchRegistration() {
             const name = document.getElementById('searchInput').value.trim();
+            const birthday = document.getElementById('searchBirthday').value;
+
             if (!name) {
                 showToast('請輸入幼兒姓名', 'warning');
                 return;
             }
 
+            if (!birthday) {
+                showToast('請輸入幼兒生日', 'warning');
+                return;
+            }
+
             try {
-                const response = await apiFetch('/query-registration?name=' + encodeURIComponent(name));
+                const response = await apiFetch('/query-registration?name=' + encodeURIComponent(name) + '&birthday=' + encodeURIComponent(birthday));
                 if (response.ok) {
                     const data = await response.json();
                     displayResult(data);
