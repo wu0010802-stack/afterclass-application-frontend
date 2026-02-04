@@ -273,7 +273,7 @@
 
             <div class="form-row">
                 <label class="form-label">幼兒生日 Birthday (YYYY/MM/DD)</label>
-                <input type="date" id="studentBirthday" class="form-input">
+                <input type="date" id="studentBirthday" class="form-input" readonly>
             </div>
 
             <div class="form-row">
@@ -491,7 +491,7 @@
                 });
                 const result = await response.json();
                 if (response.ok) {
-                    showToast('✅ 資料更新成功！ ID: ' + result.id, 'success');
+                    showToast('✅ 資料更新成功！', 'success');
                     setTimeout(() => {
                         if (confirm('是否關閉此視窗？')) window.close();
                     }, 1500);
