@@ -387,3 +387,75 @@ function closeVideoModal() {
 document.getElementById('videoModal')?.addEventListener('click', function (e) {
     if (e.target === this) closeVideoModal();
 });
+
+
+// --- CONTACT MODAL ---
+
+function openContactModal() {
+    const modal = document.getElementById('contactModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        // Clear form
+        document.getElementById('contactName').value = '';
+        document.getElementById('contactPhone').value = '';
+        document.getElementById('contactQuestion').value = '';
+    }
+}
+
+function closeContactModal() {
+    const modal = document.getElementById('contactModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Close modal when clicking outside
+document.getElementById('contactModal')?.addEventListener('click', function (e) {
+    if (e.target === this) closeContactModal();
+});
+
+async function submitContactForm() {
+    const name = document.getElementById('contactName').value.trim();
+    const phone = document.getElementById('contactPhone').value.trim();
+    const question = document.getElementById('contactQuestion').value.trim();
+
+    // Validation
+    if (!name) {
+        showToast('請輸入您的姓名', 'error');
+        return;
+    }
+    if (!phone) {
+        showToast('請輸入聯絡電話', 'error');
+        return;
+    }
+    if (!question) {
+        showToast('請輸入您的問題', 'error');
+        return;
+    }
+
+    // Phone validation (Taiwan mobile: 09xxxxxxxx)
+    const phoneRegex = /^09\d{8}$/;
+    if (!phoneRegex.test(phone.replace(/-/g, ''))) {
+        showToast('請輸入有效的手機號碼 (例如: 0912345678)', 'error');
+        return;
+    }
+
+    try {
+        const response = await apiFetch('/api/inquiries', {
+            method: 'POST',
+            body: JSON.stringify({ name, phone, question })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showToast(result.message || '感謝您的提問，我們會儘快回覆您！', 'success');
+            closeContactModal();
+        } else {
+            throw new Error(result.message || '送出失敗，請稍後再試');
+        }
+    } catch (error) {
+        console.error('Error submitting inquiry:', error);
+        showToast(error.message || '網路錯誤，請稍後再試', 'error');
+    }
+}

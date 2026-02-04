@@ -29,6 +29,65 @@
         </div>
     </div>
 
+    <!-- Contact Modal -->
+    <div class="video-modal-overlay" id="contactModal" style="display:none;">
+        <div class="video-modal" style="max-width: 500px;">
+            <button class="video-modal-close" onclick="closeContactModal()">×</button>
+            <div style="padding: 20px;">
+                <h3
+                    style="margin: 0 0 20px 0; font-size: 22px; border-bottom: 2px solid #2f6f4e; padding-bottom: 10px; color: #2f6f4e;">
+                    📞 聯絡主辦單位
+                </h3>
+
+                <!-- School Info -->
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="font-size: 18px; font-weight: 600; color: #333; margin-bottom: 8px;">
+                        🏫 常春藤仁武校
+                    </div>
+                    <div style="font-size: 15px; color: #555;">
+                        📍 高雄市仁武區仁雄路99號
+                    </div>
+                    <div style="font-size: 15px; color: #555; margin-top: 5px;">
+                        ☎️ 電話：<a href="tel:07-3740606" style="color:#2f6f4e; font-weight: 600;">(07) 374-0606</a>
+                    </div>
+                </div>
+
+                <!-- Question Form -->
+                <div style="border-top: 1px dashed #ddd; padding-top: 15px;">
+                    <div style="font-size: 14px; color: #e07a5f; margin-bottom: 15px;">
+                        ✉️ 您也可以透過以下表單留下問題，我們會儘快與您聯繫
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">您的姓名 <span
+                                style="color:red;">*</span></label>
+                        <input type="text" id="contactName" placeholder="請輸入您的姓名"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">聯絡電話 <span
+                                style="color:red;">*</span></label>
+                        <input type="tel" id="contactPhone" placeholder="請輸入手機號碼"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 5px;">您的問題 <span
+                                style="color:red;">*</span></label>
+                        <textarea id="contactQuestion" placeholder="請輸入您要詢問的問題" rows="4"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
+                    </div>
+
+                    <button type="button" onclick="submitContactForm()"
+                        style="width: 100%; padding: 12px; background: #2f6f4e; color: #fff; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                        送出提問
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="page-wrapper">
         <header class="page-header">
             <div class="page-header-main">
@@ -84,7 +143,8 @@
                                     <span class="required-mark">※</span>幼兒姓名 <span class="en">Child's Name</span>
                                 </div>
                                 <div class="form-input-col">
-                                    <input type="text" id="studentName" class="input-text" placeholder="請輸入幼兒姓名" maxlength="100">
+                                    <input type="text" id="studentName" class="input-text" placeholder="請輸入幼兒姓名"
+                                        maxlength="100">
                                 </div>
                             </div>
 
@@ -125,12 +185,12 @@
                                 </div>
                                 <div class="form-input-col">
                                     <div class="dance-grid" id="suppliesList">
-                                       <!-- Supplies list will be populated by JS -->
+                                        <!-- Supplies list will be populated by JS -->
                                     </div>
                                 </div>
                             </div>
 
-                        </div> 
+                        </div>
                         <button type="button" class="btn-submit" id="submitBtn">
                             確認報名資料 <span style="font-size:0.8em; font-weight:400;">Submit</span>
                         </button>
@@ -143,8 +203,7 @@
                                 onmouseout="this.style.background='#fff'; this.style.color='#2f6f4e'">
                                 🔍 查詢/修改報名
                             </button>
-                            <button type="button"
-                                onclick="window.location.href='https://www.ivykidschool.com/%E4%BB%81%E6%AD%A6%E6%A0%A1%E4%BB%8B%E7%B4%B9'"
+                            <button type="button" onclick="openContactModal()"
                                 style="flex:1; padding:10px; font-size:14px; font-weight:600; cursor:pointer; background:#fff; color:#e07a5f; border:2px solid #e07a5f; border-radius:6px; transition: all 0.3s;"
                                 onmouseover="this.style.background='#e07a5f'; this.style.color='#fff'"
                                 onmouseout="this.style.background='#fff'; this.style.color='#e07a5f'">
