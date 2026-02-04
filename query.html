@@ -447,12 +447,21 @@
 
             const coursesGroup = document.getElementById('coursesGroup');
             coursesGroup.innerHTML = courseOptions.map(course => {
-                const isChecked = data.courses && data.courses.some(c => c.name === course.name);
+                const registeredCourse = data.courses && data.courses.find(c => c.name === course.name);
+                const isChecked = !!registeredCourse;
+                let statusBadge = '';
+
+                if (registeredCourse && registeredCourse.status === 'waitlist') {
+                    const position = registeredCourse.waitlist_position || '?';
+                    statusBadge = `<span style="color: #e67e22; font-weight: bold; margin-left: 8px;">(候補第${position}位)</span>`;
+                }
+
                 return `
                     <label class="checkbox-item">
                         <input type="checkbox" value="${course.name}" data-price="${course.price}" ${isChecked ? 'checked' : ''}>
                         <span>${course.name}</span>
                         <span class="price-tag">$${course.price}</span>
+                        ${statusBadge}
                     </label>
                 `;
             }).join('');
